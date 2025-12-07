@@ -55,7 +55,7 @@ export class ImagenService {
         const data = await response.json() as any
 
         // Debug logging
-        console.log("Imagen API Response:", JSON.stringify(data, null, 2))
+        // console.log("Imagen API Response:", JSON.stringify(data, null, 2))
 
         // 1. Vertex AI / Standard structure: { predictions: [ { bytesBase64: "..." } ] }
         if (data.predictions && data.predictions[0]) {

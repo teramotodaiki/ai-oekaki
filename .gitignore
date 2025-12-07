@@ -82,3 +82,5 @@ typings/
 
 # Secrets
 .dev.vars
+dist/
+.wrangler/

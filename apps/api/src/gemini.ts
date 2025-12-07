@@ -15,14 +15,16 @@ export class GeminiService {
         // System prompt behavior via input, as some models don't support system instructions in the same way yet,
         // or to keep it compatible with Flash variants.
         const prompt = `
-      You are an expert prompt engineer for image generation AI.
+      You are a translator and style enhancer for image generation.
 
-      Task: Convert the following Japanese spoken text (from a 5-year-old) into a high-quality, detailed English image generation prompt.
-      The style should be "colorful, friendly, storybook illustration, highly detailed, 8k resolution".
+      Task: accurate translation of the Japanese input into English, and append specific style keywords.
+      IMPORTANT: Do NOT add any new objects, characters, or story elements that are not in the input. Keep the subject matter EXACTLY as requested.
+
+      Style keywords to append: "storybook illustration, colorful, 8k resolution, highly detailed"
 
       Input: "${originalText}"
 
-      Output (just the English prompt):
+      Output (English prompt only):
     `
 
         const result = await model.generateContent(prompt)
