@@ -23,10 +23,17 @@
 - 画像生成APIは英語でないと正確に描画できないことが多いので、GPTを使って英語プロンプトに変換してから送信します。
 - 送信ボタンはありません。音声認識を開始すると、音声をある程度認識 (debounce) したら、それを自動的に送信します。
 - 新しい画像は画像表示エリアの一番上に挿入されます。
+- API Key はサーバーサイドに置き、APIから呼び出します。
 
 ## 設計
 
-- 音声認識は Web Speech API を使用します。
 - 画像生成は抽象化して、APIを切り替えられるようにします。
-- TypeScript / Vite を使用します。
 
+## 技術選定
+
+- 音声認識: Web Speech API (ja-JP)
+- プロンプト生成: Gemini 2.5 Flash-Lite
+- 画像生成: Imagen 4 Fast
+- UI: Vite / React / TypeScript
+- Serverless: Cloudflare Workers
+- Backend: Hono.js
