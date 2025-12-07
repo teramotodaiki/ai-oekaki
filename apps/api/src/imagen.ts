@@ -27,7 +27,7 @@ export class ImagenService {
             ],
             parameters: {
                 sampleCount: 1,
-                aspectRatio: "9:16", // Mobile first
+                aspectRatio: "1:1",
                 safetySettings: [
                     { category: "HARM_CATEGORY_SEXUAL", threshold: "BLOCK_LOW_AND_ABOVE" },
                     { category: "HARM_CATEGORY_DANGEROUS", threshold: "BLOCK_LOW_AND_ABOVE" },

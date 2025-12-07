@@ -24,7 +24,7 @@ export function ImageFeed({ images }: ImageFeedProps) {
                         transition={{ type: "spring", stiffness: 300, damping: 25 }}
                         className="w-full bg-white rounded-3xl shadow-xl overflow-hidden border-4 border-white"
                     >
-                        <div className="relative aspect-[3/4] w-full bg-slate-100">
+                        <div className="relative aspect-square w-full bg-slate-100">
                             <img
                                 src={img.url}
                                 alt={img.originalPrompt}
