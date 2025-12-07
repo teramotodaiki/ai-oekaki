@@ -52,7 +52,7 @@ function App() {
     })
 
     return (
-        <div className="min-h-screen bg-slate-50 flex flex-col overflow-hidden max-w-md mx-auto shadow-2xl relative">
+        <div className="h-[100dvh] w-full bg-slate-50 flex flex-col overflow-hidden max-w-md mx-auto shadow-2xl relative">
             <header className="px-6 py-4 bg-white/80 backdrop-blur-md sticky top-0 z-20 shadow-sm border-b border-slate-100 flex justify-between items-center">
                 <h1 className="text-2xl font-bold font-sans text-brand-500 tracking-tight">
                     AI お絵描き
