@@ -21,8 +21,6 @@ Speak a prompt, and the AI generates a storybook-style illustration.
 The application is deployed as a **Unified Cloudflare Worker**.
 The API Worker serves both the backend logic and the frontend static assets.
 
-**Production URL**: https://ai-oekaki-api.i1013235329.workers.dev
-
 ### Deploy Command
 
 ```bash
