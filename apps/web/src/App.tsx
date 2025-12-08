@@ -3,7 +3,7 @@ import { VoiceVisualizer } from './components/VoiceVisualizer'
 import { ImageFeed, GeneratedImage } from './components/ImageFeed'
 import { useSpeechRecognition } from './hooks/useSpeechRecognition'
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8787'
+const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8787'
 
 function App() {
     const [images, setImages] = useState<GeneratedImage[]>([])
