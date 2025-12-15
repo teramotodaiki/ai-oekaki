@@ -84,3 +84,6 @@ typings/
 .dev.vars
 dist/
 .wrangler/
+
+# TypeScript build info
+*.tsbuildinfo
