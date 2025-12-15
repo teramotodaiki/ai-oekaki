@@ -3,7 +3,7 @@ import { VoiceVisualizer } from './components/VoiceVisualizer'
 import { ImageFeed, GeneratedItem } from './components/ImageFeed'
 import { useSpeechRecognition } from './hooks/useSpeechRecognition'
 
-const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8787'
+const API_URL = import.meta.env.VITE_API_URL ?? ''
 
 function App() {
     const [items, setItems] = useState<GeneratedItem[]>([])
