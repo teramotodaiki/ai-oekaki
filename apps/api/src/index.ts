@@ -72,7 +72,8 @@ app.post('/generate-canvas', async (c) => {
     }
 
     try {
-        const gemini = new GeminiService(c.env.GOOGLE_GENAI_API_KEY, c.env.GOOGLE_GENAI_MODEL_NAME)
+        // Use Gemini 3.0 Pro for advanced coding tasks
+        const gemini = new GeminiService(c.env.GOOGLE_GENAI_API_KEY, 'gemini-3-pro-preview')
 
         console.log(`Generating canvas code for: ${userVoiceInput}`)
         const code = await gemini.generateCanvasCode(userVoiceInput)

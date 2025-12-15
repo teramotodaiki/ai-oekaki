@@ -16,11 +16,11 @@
 
 ### キャンバスモード
 
-- JavaScriptとCanvasを使ってクライアントサイドで描画します。
+- Rough.js を使ってクライアントサイドで描画します。
 - JavaScriptをLLMで生成したのち、クライアントサイドで実行します。
 - 実行はシンプルに `eval` で行います。
 - セキュリティ対策やサンドボックスは不要です。
-- 完全に自由生成だと実行時エラーが出る可能性が高いので、 `ctx` という変数名でCanvasを参照するようにしてください。
+- 完全に自由生成だと実行時エラーが出る可能性が高いので、 `roughCanvas` という変数名でCanvasを参照するようにしてください。
 
 ## 使い方
 
@@ -47,7 +47,7 @@
 - 音声認識: Web Speech API (ja-JP)
 - プロンプト生成: Gemini 2.5 Flash-Lite
 - 画像生成: Imagen 4 Fast
-- キャンバス: HTML5 Canvas + JavaScript (eval)
+- キャンバス: Rough.js + eval
 - UI: Vite / React / TypeScript
 - Serverless: Cloudflare Workers
 - Backend: Hono.js
