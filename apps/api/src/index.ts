@@ -1,5 +1,6 @@
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
+import type { Fetcher } from '@cloudflare/workers-types'
 import { GeminiService } from './gemini'
 import { ImagenService } from './imagen'
 
@@ -7,11 +8,29 @@ type Bindings = {
     GOOGLE_GENAI_API_KEY: string
     GOOGLE_GENAI_MODEL_NAME: string
     IMAGEN_MODEL_NAME: string
+    VITE_DEV_SERVER_URL?: string
+    ASSETS?: Fetcher
 }
 
 const app = new Hono<{ Bindings: Bindings }>()
 
 app.use('/*', cors())
+
+app.get('/*', async (c) => {
+    if (c.env.VITE_DEV_SERVER_URL) {
+        // Proxy to local Vite Dev Server
+        const url = new URL(c.req.url)
+        url.host = new URL(c.env.VITE_DEV_SERVER_URL).host
+        url.protocol = new URL(c.env.VITE_DEV_SERVER_URL).protocol
+        url.port = new URL(c.env.VITE_DEV_SERVER_URL).port
+
+        const res = await fetch(url.toString(), c.req.raw as any)
+        return res as any
+    } else {
+        // Serve static assets in production
+        return c.env.ASSETS!.fetch(c.req.raw as any) as any
+    }
+})
 
 app.post('/generate', async (c) => {
     const { prompt: userVoiceInput } = await c.req.json()
