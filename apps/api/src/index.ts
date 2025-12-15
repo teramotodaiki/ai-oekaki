@@ -45,4 +45,29 @@ app.post('/generate', async (c) => {
     }
 })
 
+app.post('/generate-canvas', async (c) => {
+    const { prompt: userVoiceInput } = await c.req.json()
+
+    if (!userVoiceInput) {
+        return c.json({ error: 'No input provided' }, 400)
+    }
+
+    try {
+        const gemini = new GeminiService(c.env.GOOGLE_GENAI_API_KEY, c.env.GOOGLE_GENAI_MODEL_NAME)
+
+        console.log(`Generating canvas code for: ${userVoiceInput}`)
+        const code = await gemini.generateCanvasCode(userVoiceInput)
+        console.log(`Generated code: ${code}`)
+
+        return c.json({
+            original: userVoiceInput,
+            code: code
+        })
+
+    } catch (e: any) {
+        console.error(e)
+        return c.json({ error: e.message }, 500)
+    }
+})
+
 export default app
