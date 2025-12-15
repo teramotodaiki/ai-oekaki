@@ -3,7 +3,7 @@ import { VoiceVisualizer } from './components/VoiceVisualizer'
 import { ImageFeed, GeneratedItem } from './components/ImageFeed'
 import { useSpeechRecognition } from './hooks/useSpeechRecognition'
 
-const API_URL = import.meta.env.VITE_API_URL ?? ''
+
 
 function App() {
     const [items, setItems] = useState<GeneratedItem[]>([])
@@ -18,7 +18,7 @@ function App() {
             let item: GeneratedItem
 
             if (mode === 'image') {
-                const res = await fetch(`${API_URL}/generate`, {
+                const res = await fetch('/generate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ prompt: text })
@@ -34,7 +34,7 @@ function App() {
                     timestamp: Date.now()
                 }
             } else {
-                const res = await fetch(`${API_URL}/generate-canvas`, {
+                const res = await fetch('/generate-canvas', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ prompt: text })
