@@ -7,7 +7,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "npm-run-all --parallel dev:*",
     "dev:api": "pnpm --filter api dev",
-    "dev:web": "pnpm --filter web dev"
+    "dev:web": "pnpm --filter web dev",
+    "build": "pnpm --filter web build",
+    "deploy": "npm-run-all build deploy:api",
+    "deploy:api": "pnpm --filter api run deploy"
   },
   "keywords": [],
   "author": "",
