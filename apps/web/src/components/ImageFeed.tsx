@@ -4,9 +4,10 @@ import { CanvasRenderer } from './CanvasRenderer'
 export interface GeneratedItem {
     id: string
     type: 'image' | 'canvas'
-    content: string // url or code
+    content?: string // url or code (undefined when generating)
     originalPrompt: string
     timestamp: number
+    status: 'generating' | 'completed'
 }
 
 interface ImageFeedProps {
@@ -27,14 +28,21 @@ export function ImageFeed({ items }: ImageFeedProps) {
                         className="w-full bg-white rounded-3xl shadow-xl overflow-hidden border-4 border-white"
                     >
                         <div className="relative aspect-square w-full bg-slate-100">
-                            {item.type === 'image' ? (
+                            {item.status === 'generating' ? (
+                                <div className="w-full h-full flex items-center justify-center">
+                                    <div className="text-center">
+                                        <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-brand-500 border-t-transparent mb-4"></div>
+                                        <p className="text-brand-500 font-bold text-lg">生成中...</p>
+                                    </div>
+                                </div>
+                            ) : item.type === 'image' ? (
                                 <img
-                                    src={item.content}
+                                    src={item.content!}
                                     alt={item.originalPrompt}
                                     className="w-full h-full object-cover"
                                 />
                             ) : (
-                                <CanvasRenderer code={item.content} />
+                                <CanvasRenderer code={item.content!} />
                             )}
                         </div>
                         <div className="p-4 bg-brand-50">

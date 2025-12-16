@@ -7,15 +7,25 @@ import { useSpeechRecognition } from './hooks/useSpeechRecognition'
 
 function App() {
     const [items, setItems] = useState<GeneratedItem[]>([])
-    const [isGenerating, setIsGenerating] = useState(false)
     const [mode, setMode] = useState<'image' | 'canvas'>('image')
 
     const handleTranscript = useCallback(async (text: string) => {
-        if (isGenerating) return
-        setIsGenerating(true)
+        // すぐにplaceholderカードを追加
+        const placeholderId = crypto.randomUUID()
+        const placeholderItem: GeneratedItem = {
+            id: placeholderId,
+            type: mode,
+            originalPrompt: text,
+            timestamp: Date.now(),
+            status: 'generating'
+        }
 
+        setItems(prev => [placeholderItem, ...prev])
+
+        // 非同期で画像生成を実行
         try {
-            let item: GeneratedItem
+            let content: string
+            let originalPrompt: string
 
             if (mode === 'image') {
                 const res = await fetch('/generate', {
@@ -25,14 +35,8 @@ function App() {
                 })
                 if (!res.ok) throw new Error('API Error')
                 const data = await res.json()
-
-                item = {
-                    id: crypto.randomUUID(),
-                    type: 'image',
-                    content: data.image,
-                    originalPrompt: data.original,
-                    timestamp: Date.now()
-                }
+                content = data.image
+                originalPrompt = data.original
             } else {
                 const res = await fetch('/generate-canvas', {
                     method: 'POST',
@@ -41,24 +45,23 @@ function App() {
                 })
                 if (!res.ok) throw new Error('API Error')
                 const data = await res.json()
-
-                item = {
-                    id: crypto.randomUUID(),
-                    type: 'canvas',
-                    content: data.code,
-                    originalPrompt: data.original,
-                    timestamp: Date.now()
-                }
+                content = data.code
+                originalPrompt = data.original
             }
 
-            setItems(prev => [item, ...prev])
+            // カードを更新（placeholderから実際のコンテンツに）
+            setItems(prev => prev.map(item =>
+                item.id === placeholderId
+                    ? { ...item, content, originalPrompt, status: 'completed' as const }
+                    : item
+            ))
 
         } catch (e) {
             console.error(e)
-        } finally {
-            setIsGenerating(false)
+            // エラー時はカードを削除
+            setItems(prev => prev.filter(item => item.id !== placeholderId))
         }
-    }, [isGenerating, mode])
+    }, [mode])
 
     const { isListening, interimTranscript, startListening, stopListening } = useSpeechRecognition({
         onTranscriptFinalized: handleTranscript,
@@ -79,15 +82,6 @@ function App() {
             {/* Main Feed */}
             <main className="flex-1 relative overflow-hidden flex flex-col">
                 <ImageFeed items={items} />
-
-                {/* Loading Overlay */}
-                {isGenerating && (
-                    <div className="absolute inset-x-0 top-0 p-4 z-10 flex justify-center pointer-events-none">
-                        <div className="bg-brand-500 text-white px-6 py-2 rounded-full shadow-lg font-bold animate-bounce">
-                            作成中...
-                        </div>
-                    </div>
-                )}
             </main>
 
             {/* Bottom Control Bar */}
