@@ -72,11 +72,8 @@ function App() {
         <div className="h-[100dvh] w-full bg-slate-50 flex flex-col overflow-hidden max-w-md mx-auto shadow-2xl relative">
             <header className="px-6 py-4 bg-white/80 backdrop-blur-md sticky top-0 z-20 shadow-sm border-b border-slate-100 flex justify-between items-center">
                 <h1 className="text-2xl font-bold font-sans text-brand-500 tracking-tight">
-                    AI お絵描き
+                    AI おえかき
                 </h1>
-                <div className={`px-3 py-1 rounded-full text-xs font-bold ${mode === 'image' ? 'bg-purple-100 text-purple-600' : 'bg-orange-100 text-orange-600'}`}>
-                    {mode === 'image' ? '画像モード' : 'お絵かきモード'}
-                </div>
             </header>
 
             {/* Main Feed */}
@@ -104,7 +101,7 @@ function App() {
                                 : 'bg-slate-100 text-slate-400 hover:bg-slate-200'
                                 }`}
                         >
-                            🎨 キャンバス
+                            ✏️ ペン
                         </button>
                     </div>
 
