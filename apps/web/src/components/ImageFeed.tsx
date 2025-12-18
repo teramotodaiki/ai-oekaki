@@ -8,13 +8,15 @@ export interface GeneratedItem {
     originalPrompt: string
     timestamp: number
     status: 'generating' | 'completed'
+    // Callback for when streaming completes? No, callback is passed in render.
 }
 
 interface ImageFeedProps {
     items: GeneratedItem[]
+    onCanvasComplete?: (id: string, code: string) => void
 }
 
-export function ImageFeed({ items }: ImageFeedProps) {
+export function ImageFeed({ items, onCanvasComplete }: ImageFeedProps) {
     return (
         <div className="w-full flex-1 overflow-y-auto p-4 space-y-6">
             <AnimatePresence initial={false}>
@@ -29,12 +31,19 @@ export function ImageFeed({ items }: ImageFeedProps) {
                     >
                         <div className="relative aspect-square w-full bg-slate-100">
                             {item.status === 'generating' ? (
-                                <div className="w-full h-full flex items-center justify-center">
-                                    <div className="text-center">
-                                        <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-brand-500 border-t-transparent mb-4"></div>
-                                        <p className="text-brand-500 font-bold text-lg">生成中...</p>
+                                item.type === 'canvas' ? (
+                                    <CanvasRenderer
+                                        streamPrompt={item.originalPrompt}
+                                        onComplete={(code: string) => onCanvasComplete?.(item.id, code)}
+                                    />
+                                ) : (
+                                    <div className="w-full h-full flex items-center justify-center">
+                                        <div className="text-center">
+                                            <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-brand-500 border-t-transparent mb-4"></div>
+                                            <p className="text-brand-500 font-bold text-lg">生成中...</p>
+                                        </div>
                                     </div>
-                                </div>
+                                )
                             ) : item.type === 'image' ? (
                                 <img
                                     src={item.content!}

@@ -44,7 +44,44 @@ export class GeminiService {
             }
         })
 
-        const prompt = `
+        const prompt = this.createCanvasPrompt(originalText);
+
+        const result = await model.generateContent(prompt)
+        const response = await result.response
+        let text = response.text().trim()
+
+        // Cleanup if the model adds markdown
+        if (text.startsWith('```javascript')) {
+            text = text.replace('```javascript', '').replace('```', '').trim()
+        } else if (text.startsWith('```')) {
+            text = text.replace('```', '').replace('```', '').trim()
+        }
+
+        return text
+    }
+
+    async *generateCanvasCodeStream(originalText: string): AsyncGenerator<string> {
+        const model = this.genAI.getGenerativeModel({
+            model: this.modelName,
+            generationConfig: {
+                // @ts-ignore
+                thinkingConfig: {
+                    thinkingLevel: "LOW"
+                }
+            }
+        })
+
+        const prompt = this.createCanvasPrompt(originalText);
+
+        const result = await model.generateContentStream(prompt);
+
+        for await (const chunk of result.stream) {
+            yield chunk.text();
+        }
+    }
+
+    private createCanvasPrompt(originalText: string): string {
+        return `
         You are a JavaScript developer for a specialized drawing app using Rough.js.
 
             Task: Write JavaScript code to draw the request using the 'roughCanvas' object.
@@ -77,18 +114,5 @@ export class GeminiService {
         Example Output:
           roughCanvas.circle(256, 256, 200, { stroke: 'red', fill: 'rgba(255,0,0,0.2)', fillStyle: 'hachure' });
         `
-
-        const result = await model.generateContent(prompt)
-        const response = await result.response
-        let text = response.text().trim()
-
-        // Cleanup if the model adds markdown
-        if (text.startsWith('```javascript')) {
-            text = text.replace('```javascript', '').replace('```', '').trim()
-        } else if (text.startsWith('```')) {
-            text = text.replace('```', '').replace('```', '').trim()
-        }
-
-        return text
     }
 }

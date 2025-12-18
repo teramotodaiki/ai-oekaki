@@ -22,12 +22,9 @@ function App() {
 
         setItems(prev => [placeholderItem, ...prev])
 
-        // 非同期で画像生成を実行
-        try {
-            let content: string
-            let originalPrompt: string
-
-            if (mode === 'image') {
+        // 画像生成 (CanvasはImageFeed内で生成・ストリーミングされる)
+        if (mode === 'image') {
+            try {
                 const res = await fetch('/generate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -35,33 +32,31 @@ function App() {
                 })
                 if (!res.ok) throw new Error('API Error')
                 const data = await res.json()
-                content = data.image
-                originalPrompt = data.original
-            } else {
-                const res = await fetch('/generate-canvas', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: text })
-                })
-                if (!res.ok) throw new Error('API Error')
-                const data = await res.json()
-                content = data.code
-                originalPrompt = data.original
+
+                // カードを更新
+                setItems(prev => prev.map(item =>
+                    item.id === placeholderId
+                        ? { ...item, content: data.image, originalPrompt: data.original, status: 'completed' as const }
+                        : item
+                ))
+
+            } catch (e) {
+                console.error(e)
+                setItems(prev => prev.filter(item => item.id !== placeholderId))
             }
-
-            // カードを更新（placeholderから実際のコンテンツに）
-            setItems(prev => prev.map(item =>
-                item.id === placeholderId
-                    ? { ...item, content, originalPrompt, status: 'completed' as const }
-                    : item
-            ))
-
-        } catch (e) {
-            console.error(e)
-            // エラー時はカードを削除
-            setItems(prev => prev.filter(item => item.id !== placeholderId))
         }
+        // Canvas ModeはここではFetchしない。
+        // ImageFeed -> CanvasRenderer(streamPrompt) に任せる
+
     }, [mode])
+
+    const handleCanvasComplete = useCallback((id: string, code: string) => {
+        setItems(prev => prev.map(item =>
+            item.id === id
+                ? { ...item, content: code, status: 'completed' as const }
+                : item
+        ))
+    }, [])
 
     const { isListening, interimTranscript, startListening, stopListening } = useSpeechRecognition({
         onTranscriptFinalized: handleTranscript,
@@ -78,7 +73,7 @@ function App() {
 
             {/* Main Feed */}
             <main className="flex-1 relative overflow-hidden flex flex-col">
-                <ImageFeed items={items} />
+                <ImageFeed items={items} onCanvasComplete={handleCanvasComplete} />
             </main>
 
             {/* Bottom Control Bar */}
