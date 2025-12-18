@@ -1,5 +1,6 @@
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
+import { stream, streamText } from 'hono/streaming'
 import type { Fetcher } from '@cloudflare/workers-types'
 import { GeminiService } from './gemini'
 import { ImagenService } from './imagen'
@@ -88,6 +89,33 @@ app.post('/generate-canvas', async (c) => {
         console.error(e)
         return c.json({ error: e.message }, 500)
     }
+})
+
+app.post('/generate-canvas-stream', async (c) => {
+    const { prompt: userVoiceInput } = await c.req.json()
+
+    if (!userVoiceInput) {
+        return c.json({ error: 'No input provided' }, 400)
+    }
+
+    const gemini = new GeminiService(c.env.GOOGLE_GENAI_API_KEY, 'gemini-3-pro-preview')
+
+    return stream(c, async (stream) => {
+        c.header('Content-Type', 'text/plain; charset=utf-8')
+        c.header('X-Content-Type-Options', 'nosniff')
+        c.header('Transfer-Encoding', 'chunked')
+        c.header('Content-Encoding', 'identity')
+
+        try {
+            const codeStream = gemini.generateCanvasCodeStream(userVoiceInput)
+            for await (const chunk of codeStream) {
+                await stream.write(chunk)
+            }
+        } catch (e: any) {
+            console.error(e)
+            await stream.write(`// Error: ${e.message}`)
+        }
+    })
 })
 
 export default app
