@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from 'react'
+import { useRef, useEffect } from 'react'
 import rough from 'roughjs'
 import { IncrementalRunner } from '../utils/IncrementalRunner'
 
@@ -14,7 +14,6 @@ export function CanvasRenderer({ code, size = 512, streamPrompt, onComplete }: C
 
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const runnerRef = useRef<IncrementalRunner | null>(null);
-    const [isStreaming, setIsStreaming] = useState(false)
 
     // Initial Setup
     useEffect(() => {
@@ -73,7 +72,6 @@ export function CanvasRenderer({ code, size = 512, streamPrompt, onComplete }: C
 
         const fetchData = async () => {
             console.log("Starting stream fetch for:", streamPrompt);
-            setIsStreaming(true);
 
             // Reset runner and canvas for new stream specific to this effect run
             const canvas = canvasRef.current;
@@ -154,9 +152,6 @@ export function CanvasRenderer({ code, size = 512, streamPrompt, onComplete }: C
                     console.error("Stream fetch error", e);
                 }
             } finally {
-                if (!signal.aborted) {
-                    setIsStreaming(false);
-                }
             }
         }
 
