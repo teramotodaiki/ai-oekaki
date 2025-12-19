@@ -10,6 +10,18 @@ function App() {
     const [mode, setMode] = useState<'image' | 'canvas'>('image')
 
     const handleTranscript = useCallback(async (text: string) => {
+        const debugSpeech = (() => {
+            try {
+                return (window as any).__debugSpeech === true || window.localStorage.getItem('debugSpeech') === '1'
+            } catch {
+                return false
+            }
+        })()
+
+        if (debugSpeech) {
+            console.log('[app] handleTranscript', { mode, text })
+        }
+
         // すぐにplaceholderカードを追加
         const placeholderId = crypto.randomUUID()
         const placeholderItem: GeneratedItem = {
@@ -25,6 +37,7 @@ function App() {
         // 画像生成 (CanvasはImageFeed内で生成・ストリーミングされる)
         if (mode === 'image') {
             try {
+                if (debugSpeech) console.log('[app] generate(image) start', { placeholderId })
                 const res = await fetch('/generate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -39,6 +52,7 @@ function App() {
                         ? { ...item, content: data.image, originalPrompt: data.original, status: 'completed' as const }
                         : item
                 ))
+                if (debugSpeech) console.log('[app] generate(image) done', { placeholderId })
 
             } catch (e) {
                 console.error(e)
