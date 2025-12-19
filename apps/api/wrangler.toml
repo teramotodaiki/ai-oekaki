@@ -16,3 +16,7 @@ IMAGEN_MODEL_NAME = "imagen-4.0-fast-generate-001"
 [env.production.assets]
 directory = "../web/dist"
 binding = "ASSETS"
+
+[dev]
+ip = "0.0.0.0"
+port = 8787

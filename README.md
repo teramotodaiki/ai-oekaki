@@ -7,9 +7,6 @@ Speak a prompt, and the AI generates a storybook-style illustration.
 
 - **Frontend**: React, Vite, TailwindCSS
 - **Backend**: Cloudflare Workers (Hono)
-- **AI Models**:
-    - **Prompt Refinement**: Google Gemini 2.0 Flash Lite
-    - **Image Generation**: Google Imagen 3 (via Gemini API)
 
 ## Project Structure
 
@@ -21,26 +18,14 @@ Speak a prompt, and the AI generates a storybook-style illustration.
 The application is deployed as a **Unified Cloudflare Worker**.
 The API Worker serves both the backend logic and the frontend static assets.
 
-### Deploy Command
-
-```bash
-# 1. Build Frontend
-cd apps/web
-pnpm run build
-
-# 2. Deploy API (includes frontend assets)
-cd ../api
-pnpm run deploy
-```
-
 ## Local Development
 
 ```bash
-# Frontend
-cd apps/web
-pnpm dev
-
-# Backend
-cd apps/api
+# Monorepo (recommended)
 pnpm dev
 ```
+
+### iPhone から動作確認したい場合
+
+- 同じ Wi‑Fi に接続した状態で、iPhone の Safari から `http://<あなたのPCのIPアドレス>:8787` にアクセスしてください。
+- Mac なら IP は `ipconfig getifaddr en0`（Wi‑Fi）で確認できます。
